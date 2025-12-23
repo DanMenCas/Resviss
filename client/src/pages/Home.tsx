@@ -24,9 +24,12 @@ const TEST_IMAGES = {
 };
 
 export default function Home() {
-  const { data: teamMembers, isLoading: loadingTeam } = useTeam();
-  const { data: products, isLoading: loadingProducts } = useProducts();
+  const { data: teamMembers, isLoading: loadingTeam, error: teamError } = useTeam();
+  const { data: products, isLoading: loadingProducts, error: productError } = useProducts();
   const { tryOn, isProcessing, result } = useVirtualTryOn();
+  
+  console.log("Team state:", { loading: loadingTeam, data: teamMembers, error: teamError });
+  console.log("Products state:", { loading: loadingProducts, data: products, error: productError });
 
   const [personImage, setPersonImage] = useState<File | string | null>(null);
   const [garmentImage, setGarmentImage] = useState<File | string | null>(null);
@@ -159,9 +162,17 @@ export default function Home() {
             <div className="flex justify-center py-12">
               <Loader2 className="animate-spin text-primary w-12 h-12" />
             </div>
+          ) : teamError ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-4">
+              <strong>Error loading team:</strong> {String(teamError)}
+            </div>
+          ) : !teamMembers || teamMembers.length === 0 ? (
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative my-4">
+              <strong>No team data available</strong>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {teamMembers?.map((member, idx) => (
+              {teamMembers.map((member, idx) => (
                 <TeamCard key={member.id} member={member} index={idx} />
               ))}
             </div>
@@ -181,9 +192,17 @@ export default function Home() {
             <div className="flex justify-center py-12">
               <Loader2 className="animate-spin text-primary w-12 h-12" />
             </div>
+          ) : productError ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-4">
+              <strong>Error loading products:</strong> {String(productError)}
+            </div>
+          ) : !products || products.length === 0 ? (
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative my-4">
+              <strong>No products available</strong>
+            </div>
           ) : (
             <div className="space-y-12">
-              {products?.map((product, idx) => (
+              {products.map((product, idx) => (
                 <ProductCard key={product.id} product={product} index={idx} />
               ))}
             </div>

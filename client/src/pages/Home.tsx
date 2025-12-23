@@ -12,12 +12,8 @@ import { Button } from "@/components/ui/button";
 
 const TEST_IMAGES = {
   persons: [
-    { id: 'person1', label: 'Person 1', url: '/test-images/person.jpg' },
+    { id: 'person1', label: 'Person 1', url: '/test-images/person1.jpg' },
     { id: 'person2', label: 'Person 2', url: '/test-images/person2.jpg' },
-  ],
-  garments: [
-    { id: 'garment1', label: 'Garment 1', url: '/test-images/garment.jpg' },
-    { id: 'garment2', label: 'Garment 2', url: '/test-images/garment2.jpg' },
   ],
 };
 
@@ -288,22 +284,6 @@ export default function Home() {
                   accept="image/*"
                   onChange={(e) => handleImageUpload(e, 'garment')}
                 />
-              </div>
-              
-              <div className="mt-4 w-full">
-                <p className="text-xs text-white/60 mb-2">Or try with a test image:</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {TEST_IMAGES.garments.map((img) => (
-                    <button
-                      key={img.id}
-                      onClick={() => handleLoadTestImage(img.url, 'garment')}
-                      className="h-16 rounded-lg overflow-hidden border border-white/20 hover:border-accent/50 transition-all hover:scale-105"
-                      data-testid={`button-test-${img.id}`}
-                    >
-                      <img src={img.url} alt={img.label} className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
 

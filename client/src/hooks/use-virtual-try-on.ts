@@ -11,29 +11,53 @@ export function useVirtualTryOn() {
   const [result, setResult] = useState<TryOnResult | null>(null);
   const { toast } = useToast();
 
-  const tryOn = async (personImage: File, garmentImage: File) => {
+  const tryOn = async (personImage: File | string, garmentImage: File | string) => {
     setIsProcessing(true);
     setResult(null);
 
     try {
       const client = await Client.connect("dmc98/VirtualTryOn_from_scratch");
       
-      // Convert Files to Blobs/Buffers as expected by Gradio client
-      const personBlob = await fetch(URL.createObjectURL(personImage)).then(r => r.blob());
-      const garmentBlob = await fetch(URL.createObjectURL(garmentImage)).then(r => r.blob());
+      // Handle both File objects and string URLs
+      let personInput = personImage;
+      let garmentInput = garmentImage;
+      
+      if (personImage instanceof File) {
+        personInput = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(personImage);
+        });
+      }
+      
+      if (garmentImage instanceof File) {
+        garmentInput = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(garmentImage);
+        });
+      }
 
-      const prediction = await client.predict("/predict", { 
-        param_0: personBlob, 
-        param_1: garmentBlob 
-      });
+      // Use the correct Gradio API endpoint - function index 0
+      const result_data = await client.predict(0, [personInput, garmentInput]);
 
-      // Gradio responses can vary, usually it returns an array of data
-      // Checking structure dynamically for robustness
-      const data = (prediction as any).data;
+      // Handle the response - Gradio returns data array
+      const data = (result_data as any).data || result_data;
       if (Array.isArray(data) && data.length > 0) {
-        // Assuming first element is the result image (often a URL or object with url)
         const resultItem = data[0];
-        const imageUrl = typeof resultItem === 'object' && resultItem.url ? resultItem.url : resultItem;
+        // Handle different response formats
+        let imageUrl = '';
+        if (typeof resultItem === 'string') {
+          imageUrl = resultItem;
+        } else if (resultItem && typeof resultItem === 'object' && resultItem.url) {
+          imageUrl = resultItem.url;
+        } else if (resultItem && typeof resultItem === 'object' && resultItem.name) {
+          imageUrl = resultItem.name;
+        }
+        
+        if (!imageUrl) {
+          throw new Error("No image URL in response");
+        }
         
         setResult({ image: imageUrl });
         toast({
@@ -47,7 +71,7 @@ export function useVirtualTryOn() {
       console.error("Virtual Try-On Error:", error);
       toast({
         title: "Try-On Failed",
-        description: "Could not process the images. Please try again later.",
+        description: error instanceof Error ? error.message : "Could not process the images. Please try again with different images.",
         variant: "destructive",
       });
     } finally {

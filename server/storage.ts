@@ -31,14 +31,14 @@ export class MemStorage implements IStorage {
       name: "Daniel Mendoza",
       role: "CEO & Founder",
       bio: "AI Engineer with extensive expertise in machine learning solutions and computer vision. Brings 6+ years of experience applying ML technologies to solve real-world problems.\n\nLinkedIn: linkedin.com/in/daniel-mendoza-castrillón-175b0b17a\nEmail: daniel.mendoza@resviss.com",
-      imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400",
+      imageUrl: "/team_members_images/Daniel.jpg",
     });
     this.createTeamMember({
       name: "Diego Mendoza",
       role: "CTO",
       bio: "Full Stack Developer with proven expertise in building scalable applications and integrating complex systems. Specializes in creating robust technical infrastructure to support innovative AI-driven features at scale.\n\nLinkedIn: linkedin.com/in/diegomendoza-fullstackdeveloper\nEmail: diego.mendoza@resviss.com",
       imageUrl:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400",
+        "/team_members_images/Diego.jpg",
     });
     this.createTeamMember({
       name: "Elena Rodriguez",

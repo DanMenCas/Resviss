@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Client } from "@gradio/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface TryOnResult {
-  image: string; // Base64 or URL
+  image: string;
 }
 
 export function useVirtualTryOn() {
@@ -16,58 +15,45 @@ export function useVirtualTryOn() {
     setResult(null);
 
     try {
-      const client = await Client.connect("dmc98/VirtualTryOn_from_scratch");
-      
-      // Convert images to Blob objects
-      let personBlob: Blob;
-      let garmentBlob: Blob;
+      // Convert images to Blobs using FormData
+      const formData = new FormData();
       
       // Handle person image
       if (personImage instanceof File) {
-        personBlob = personImage;
+        formData.append("personImage", personImage);
       } else {
         const response = await fetch(personImage);
-        personBlob = await response.blob();
+        const blob = await response.blob();
+        formData.append("personImage", blob, "person.jpg");
       }
       
       // Handle garment image
       if (garmentImage instanceof File) {
-        garmentBlob = garmentImage;
+        formData.append("garmentImage", garmentImage);
       } else {
         const response = await fetch(garmentImage);
-        garmentBlob = await response.blob();
+        const blob = await response.blob();
+        formData.append("garmentImage", blob, "garment.jpg");
       }
 
-      // Call the /process_images endpoint with Blob objects
-      const result_data = await client.predict("/process_images", {
-        person_img: personBlob,
-        cloth_img: garmentBlob,
+      // Send to backend API
+      const response = await fetch("/api/virtual-tryon", {
+        method: "POST",
+        body: formData,
       });
 
-      // Handle the response
-      const data = (result_data as any).data || result_data;
-      
-      // Extract image URL from response
-      let imageUrl = '';
-      
-      if (Array.isArray(data) && data.length > 0) {
-        const resultItem = data[0];
-        if (typeof resultItem === 'string') {
-          imageUrl = resultItem;
-        } else if (resultItem && typeof resultItem === 'object') {
-          imageUrl = resultItem.url || resultItem.name || '';
-        }
-      } else if (typeof data === 'string') {
-        imageUrl = data;
-      } else if (data && typeof data === 'object') {
-        imageUrl = data.url || data.name || '';
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to process images");
       }
-      
-      if (!imageUrl) {
+
+      const result_data = await response.json();
+
+      if (!result_data.image) {
         throw new Error("No image in response from API");
       }
-      
-      setResult({ image: imageUrl });
+
+      setResult({ image: result_data.image });
       toast({
         title: "Try-On Complete",
         description: "Your virtual look is ready!",
@@ -76,7 +62,10 @@ export function useVirtualTryOn() {
       console.error("Virtual Try-On Error:", error);
       toast({
         title: "Try-On Failed",
-        description: error instanceof Error ? error.message : "Could not process the images. Please try again with different images.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Could not process the images. Please try again with different images.",
         variant: "destructive",
       });
     } finally {

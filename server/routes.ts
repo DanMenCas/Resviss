@@ -61,7 +61,7 @@ export async function registerRoutes(
         const client = await Client.connect(
           "dmc98/VirtualTryOn_from_scratch",
           {
-            token: process.env.HUGGINGFACE_TOKEN,
+            token: process.env.HUGGINGFACE_TOKEN as `hf_${string}`,
           }
         );
 

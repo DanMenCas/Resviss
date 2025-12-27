@@ -14,15 +14,11 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private teamMembers: Map<number, TeamMember>;
-  private products: Map<number, Product>;
   private teamIdCounter: number;
-  private productIdCounter: number;
 
   constructor() {
     this.teamMembers = new Map();
-    this.products = new Map();
     this.teamIdCounter = 1;
-    this.productIdCounter = 1;
     this.seedData();
   }
 
@@ -40,13 +36,6 @@ export class MemStorage implements IStorage {
       imageUrl:
         "/team_members_images/Diego.jpg",
     });
-    this.createTeamMember({
-      name: "Elena Rodriguez",
-      role: "Head of Design",
-      bio: "Award-winning designer focused on digital fashion experiences.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
-    });
   }
 
   async getTeamMembers(): Promise<TeamMember[]> {
@@ -60,9 +49,6 @@ export class MemStorage implements IStorage {
     return newMember;
   }
 
-  async getProducts(): Promise<Product[]> {
-    return Array.from(this.products.values());
-  }
 }
 
 export const storage = new MemStorage();

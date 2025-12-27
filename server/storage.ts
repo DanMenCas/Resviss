@@ -8,8 +8,6 @@ import {
 export interface IStorage {
   getTeamMembers(): Promise<TeamMember[]>;
   createTeamMember(member: InsertTeamMember): Promise<TeamMember>;
-  getProducts(): Promise<Product[]>;
-  createProduct(product: InsertProduct): Promise<Product>;
 }
 
 export class MemStorage implements IStorage {

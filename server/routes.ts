@@ -18,11 +18,6 @@ export async function registerRoutes(
     res.json(team);
   });
 
-  app.get(api.products.list.path, async (req, res) => {
-    const products = await storage.getProducts();
-    res.json(products);
-  });
-
   app.post(
     "/api/virtual-tryon",
     upload.fields([

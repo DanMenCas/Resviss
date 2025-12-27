@@ -47,25 +47,6 @@ export class MemStorage implements IStorage {
       imageUrl:
         "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400",
     });
-
-    this.createProduct({
-      name: "Virtual Mirror",
-      description:
-        "Experience clothes on your digital twin in real-time with our flagship AR technology.",
-      stage: "Live",
-      imageUrl:
-        "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=600",
-      features: ["Real-time Rendering", "Size Prediction", "Fabric Physics"],
-    });
-    this.createProduct({
-      name: "StyleMatch AI",
-      description:
-        "Get personalized outfit recommendations based on your wardrobe and style preferences.",
-      stage: "Beta",
-      imageUrl:
-        "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=600",
-      features: ["Wardrobe Analysis", "Trend Forecasting", "Personal Styling"],
-    });
   }
 
   async getTeamMembers(): Promise<TeamMember[]> {
@@ -82,7 +63,6 @@ export class MemStorage implements IStorage {
   async getProducts(): Promise<Product[]> {
     return Array.from(this.products.values());
   }
-
 }
 
 export const storage = new MemStorage();

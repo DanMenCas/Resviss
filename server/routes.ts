@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { Client } from "@gradio/client";
 import multer from "multer";
+import 'dotenv/config';
 
 // Setup multer for file uploads
 const upload = multer({ storage: multer.memoryStorage() });
@@ -55,18 +56,12 @@ export async function registerRoutes(
           type: "image/jpeg",
         });
 
-        // Get HF token
-        const hfToken = process.env.HUGGINGFACE_TOKEN;
-        if (!hfToken) {
-          throw new Error("HUGGING_FACE_TOKEN not configured");
-        }
-
         console.log("[Virtual Try-On] Connecting to Hugging Face...");
         // Connect to Hugging Face Gradio client with token
         const client = await Client.connect(
           "dmc98/VirtualTryOn_from_scratch",
           {
-            hf_token: hfToken,
+            token: process.env.HUGGINGFACE_TOKEN,
           }
         );
 

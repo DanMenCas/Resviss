@@ -281,7 +281,7 @@ export default function Home() {
             </div>
 
             {/* Action & Result Column */}
-            <div className="flex flex-col justify-center space-y-6">
+            <div className="flex flex-col space-y-6">
               <Button
                 size="default"
                 className="w-full bg-accent text-accent-foreground hover:bg-white hover:text-primary transition-all duration-300 font-bold shadow-lg shadow-accent/20"
@@ -299,7 +299,7 @@ export default function Home() {
                 )}
               </Button>
 
-              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 overflow-hidden relative min-h-[400px]">
+              <div className="w-full aspect-[3/4] border-2 border-dashed bg-primary-foreground/10 backdrop-blur-md rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors overflow-hidden relative">
                 {result ? (
                   <img 
                     src={result.image} 

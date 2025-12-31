@@ -294,7 +294,7 @@ export default function Home() {
                   </>
                 ) : (
                   <>
-                    <Sparkles className="mr-2 h-6 w-6" /> Try On Now
+                    <Sparkles className="mr-2 h-6 w-6" /> Try On Now (1 - 3 minutes)
                   </>
                 )}
               </Button>
